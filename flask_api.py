@@ -27,7 +27,6 @@ class NumpyFloatValuesEncoder(json.JSONEncoder):
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    print("Making prediction...")
     data = request.files["img"]
     img = cv2.imdecode(np.fromstring(data.read(), np.uint8), cv2.IMREAD_UNCHANGED)
     img = cv2.resize(img, (224, 224))
@@ -36,11 +35,11 @@ def predict():
     img = img.astype(np.float32)
     img = np.expand_dims(img, axis=0)
     pred = model.predict(img)
-    
+
     # Format the prediction as a JSON object with the label and probability of the predicted classes
     pred_dict = {}
     for i in range(len(labels)):
-        pred_dict[labels[i]] = pred[0][i]
+        pred_dict[labels[i]] = format(float(pred[0][i]), '.7f')
     
     print(f"Prediction made and got label: {labels[np.argmax(pred)]}")
     return json.dumps(pred_dict, cls=NumpyFloatValuesEncoder)
@@ -48,5 +47,6 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000)
     print("Server running on port 5000")
+    app.run(host='localhost', port=5000)
+    print("Goodbye!")
