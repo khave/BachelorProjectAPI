@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "ad071984-612d-4724-ae79-2b30bcecd119",
+		"name": "LEGO Classification API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "LEGO Classification Predict Image",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "img",
+							"type": "file",
+							"src": "/Z:/SDU/6. Semester/Bachelor Projekt/Datasets/dataset 224x224 partially-built-big [ALL sets]/test/21034/frame_99.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/predict",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"predict"
+					]
+				},
+				"description": "Predict which class an image of a LEGO set belongs to."
+			},
+			"response": []
+		}
+	]
+}
