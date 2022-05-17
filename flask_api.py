@@ -4,11 +4,12 @@ import mlflow as mlflow
 import cv2
 import base64
 import json
+from tensorflow.keras import applications
 
 app = Flask(__name__)
 
 print("Loading model...")
-model_path = 'Models/EfficientNetV2S/EfficientNetV2S_Data_Aug_Fine_Tuned'
+model_path = 'models/fully_resnet50v2_data_aug_fine_tuned'
 model = mlflow.keras.load_model(model_path)
 print("Model loaded!")
 
@@ -34,6 +35,10 @@ def predict():
     
     img = img.astype(np.float32)
     img = np.expand_dims(img, axis=0)
+
+    # Preprocess the input according to the model requirements:  efficientnet_v2 | resnet_v2
+    img = applications.resnet_v2.preprocess_input(img)
+
     pred = model.predict(img)
 
     # Format the prediction as a JSON object with the label and probability of the predicted classes
@@ -48,5 +53,5 @@ def predict():
 
 if __name__ == '__main__':
     print("Server running on port 5000")
-    app.run(host='localhost', port=5000)
+    app.run(host='localhost', port=5000) # threaded=True 
     print("Goodbye!")
