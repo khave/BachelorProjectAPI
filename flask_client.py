@@ -3,7 +3,7 @@ import json
 import cv2
 import base64
 
-addr = 'http://localhost:5000'
+addr = 'http://127.0.0.1:5000'
 
 content_type = 'image/jpeg'
 headers = {'Content-Type': content_type}
