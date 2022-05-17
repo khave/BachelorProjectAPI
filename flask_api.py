@@ -9,7 +9,7 @@ from tensorflow.keras import applications
 app = Flask(__name__)
 
 print("Loading model...")
-model_path = 'models/fully_resnet50v2_data_aug_fine_tuned'
+model_path = 'models/combined_efficientnetv2s_data_aug_fine_tuned'
 model = mlflow.keras.load_model(model_path)
 print("Model loaded!")
 
@@ -37,7 +37,7 @@ def predict():
     img = np.expand_dims(img, axis=0)
 
     # Preprocess the input according to the model requirements:  efficientnet_v2 | resnet_v2
-    img = applications.resnet_v2.preprocess_input(img)
+    img = applications.efficientnet_v2.preprocess_input(img)
 
     pred = model.predict(img)
 
