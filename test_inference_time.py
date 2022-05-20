@@ -42,6 +42,7 @@ def test_api(num_images=1000):
     headers = {'Content-Type': content_type}
 
     # Loop through all files in the dataset folder
+    response_times = []
     total_time = 0
     count = 0
     for root, dirs, files in os.walk(DATASET_FOLDER):
@@ -60,10 +61,13 @@ def test_api(num_images=1000):
             time_taken = end - start
 
             print(f"Time taken: {time_taken}")
+            response_times.append(time_taken)
             total_time += time_taken
             count += 1
 
     print(f"Average time taken for API per prediction: {total_time / count} seconds")
+    # Print the standard deviation of the response times
+    print(f"Standard deviation: {np.std(response_times)}")
 
 
 def test_local_model():
