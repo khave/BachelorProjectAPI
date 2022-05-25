@@ -5,11 +5,13 @@ import cv2
 import base64
 import json
 from tensorflow.keras import applications
+from flasgger import Swagger
 
 app = Flask(__name__)
+swagger = Swagger(app)
 
 print("Loading model...")
-model_path = 'models/fully_resnet50v2_data_aug_fine_tuned'
+model_path = 'models/fully_efficientnetv2s_data_aug_fine_tuned'
 model = mlflow.keras.load_model(model_path)
 print("Model loaded!")
 
@@ -28,6 +30,18 @@ class NumpyFloatValuesEncoder(json.JSONEncoder):
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    """
+    POST an image to predict the class
+    ---
+    parameters:
+        - name: img
+          type: file
+          in: formData
+          required: true
+    responses:
+        200:
+          description: The prediction
+    """
     data = request.files["img"]
     img = cv2.imdecode(np.fromstring(data.read(), np.uint8), cv2.IMREAD_UNCHANGED)
     img = cv2.resize(img, (224, 224))

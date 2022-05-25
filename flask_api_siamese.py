@@ -7,6 +7,7 @@ import json
 import os
 import tensorflow as tf
 from tensorflow.keras import applications
+from flasgger import Swagger
 
 
 # Define constrastive loss
@@ -45,6 +46,7 @@ def loss(margin=1):
 
 
 app = Flask(__name__)
+swagger = Swagger(app)
 
 print("Loading model...")
 model_path = 'models/siamese_enet_fully_15_bonsai'
@@ -127,6 +129,18 @@ def predict_k_way(input_image, k=4):
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    """
+    POST an image to predict the class
+    ---
+    parameters:
+        - name: img
+          type: file
+          in: formData
+          required: true
+    responses:
+        200:
+          description: The prediction
+    """
     data = request.files["img"]
     img = cv2.imdecode(np.fromstring(data.read(), np.uint8), cv2.IMREAD_UNCHANGED)
     img = cv2.resize(img, (224, 224))
