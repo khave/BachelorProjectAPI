@@ -82,18 +82,20 @@ def load_img(img_path):
     return img
 
 
-def predict_k_way(input_image, k=4):
+def predict_k_way(input_image, k=4, threshold=0.5):
     # Load all images from the folder
     references_folder = "siamese_references/train"
 
     
     highest_mean = 0
     prediction_class = ""
+    highest_correct = 0
 
     for root, dirs, files in os.walk(references_folder):
         # Get the folder name from root
         folder_name = root.split("\\")[-1]
         print(f"Testing: {folder_name}")
+        correct = 0
         # Define the support set that we will predict the images on
         pairs = []
         for file in files:
@@ -109,16 +111,35 @@ def predict_k_way(input_image, k=4):
                 x_pair_1 = pairs[:, 0]
                 x_pair_2 = pairs[:, 1]
                 predictions = model.predict([np.array(x_pair_1), np.array(x_pair_2)])
-                # Take the average of the predictions
-                #print(predictions)
+
+                # Add +1 to correct for every predictions over threshold
+                correct += np.sum(predictions > threshold)
+                print(f"Correct: {correct}")
+
                 mean_pred = np.mean(predictions, axis=0)
                 print(f"Mean of predictions: {mean_pred}")
-                if mean_pred > highest_mean:
-                    highest_mean = mean_pred
-                    prediction_class = folder_name
+                
+                # We want correct to weight more than mean_pred
+                if correct >= highest_correct:
+                    # The most important is that the correct is the highest to return that set
+
+                    if correct == highest_correct:
+                        # If correct is the same as the highest correct, then we want the highest mean
+                        if mean_pred >= highest_mean:
+                            highest_mean = mean_pred
+                            prediction_class = folder_name
+                            highest_correct = correct
+                    else:
+                        # If not, then we know that the correct is the highest, and thus we just return that
+                        highest_correct = correct
+                        prediction_class = folder_name
+                        highest_mean = mean_pred
+
                 break
 
-    print(f"Predicted class: {prediction_class} with a mean similarity of {highest_mean} over {k} images")
+    #print(f"Predicted class: {prediction_class} with a mean similarity of {highest_mean} over {k} images")
+    print(f"Predicted class: {prediction_class} with a highest correct of {highest_correct} out of {k} images and a mean similarity of {highest_mean} across the images")
+
 
     # Format the response to be sent back to the client
     response = {
