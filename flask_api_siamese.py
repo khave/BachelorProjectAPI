@@ -82,7 +82,7 @@ def load_img(img_path):
     return img
 
 
-def predict_k_way(input_image, k=4, threshold=0.5):
+def predict_k_way(input_image, k=4, threshold=0.55):
     # Load all images from the folder
     references_folder = "siamese_references/train"
 
@@ -112,12 +112,16 @@ def predict_k_way(input_image, k=4, threshold=0.5):
                 x_pair_2 = pairs[:, 1]
                 predictions = model.predict([np.array(x_pair_1), np.array(x_pair_2)])
 
+                print(f"Raw predictions: {predictions}")
+
                 # Add +1 to correct for every predictions over threshold
                 correct += np.sum(predictions > threshold)
                 print(f"Correct: {correct}")
 
                 mean_pred = np.mean(predictions, axis=0)
                 print(f"Mean of predictions: {mean_pred}")
+
+                print("================================")
                 
                 # We want correct to weight more than mean_pred
                 if correct >= highest_correct:
