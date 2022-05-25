@@ -9,6 +9,9 @@ curl --location --request POST 'http://localhost:5000/predict' \
 
 to predict an image or use the Postman collection as provided.
 
+You can also go to the Swagger documentation to test it. 
+http://localhost:5000/apidocs/
+
 ## Files Explanation
 Siamese_Test.ipynb:
 Contains the code used to test the Siamese network in the form of a Jupyter Notebook
