@@ -86,7 +86,6 @@ def predict_k_way(input_image, k=4, threshold=0.55):
     # Load all images from the folder
     references_folder = "siamese_references/train"
 
-    
     highest_mean = 0
     prediction_class = ""
     highest_correct = 0
